@@ -40,7 +40,8 @@ jobs:
           git clone https://github.com/tailscale/tailscale -b ${{ needs.check.outputs.ver }} ../src
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
           cd ../src
-          sed -i 's|fs.BoolVar(&versionArgs.upstream, "upstream", false, "fetch and print the latest upstream release version from pkgs.tailscale.com")|//|g' ./cmd/tailscale/cli/version.go
+          sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-ERR-BuildInfo"|return shortStamp|g' ./version/version.go
+          sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return shortStamp|g' ./version/version.go
           sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
