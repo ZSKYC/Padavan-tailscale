@@ -16,7 +16,7 @@ jobs:
         name: Get version
         id: getversion
         run: |
-          ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
+          ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name' | tr -d 'v'`
           cver=`curl https://api.github.com/repos/lmq8267/cloudflared/releases/latest | jq -r '.tag_name'`
           echo "ver=${ver}" >> $GITHUB_OUTPUT
           echo "cver=${cver}" >> $GITHUB_OUTPUT
