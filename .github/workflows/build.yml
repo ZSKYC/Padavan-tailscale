@@ -44,7 +44,7 @@ jobs:
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
-          ./tool/yarn --cwd client/web build
+          #./tool/yarn --cwd client/web build
           ./build_dist.sh tailscale.com/cmd/tailscale
           ./build_dist.sh tailscale.com/cmd/tailscaled
           find ../src -name "tailscale"
