@@ -40,13 +40,11 @@ jobs:
           git clone https://github.com/tailscale/tailscale -b ${{ needs.check.outputs.ver }} ../src
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
           cd ../src
-          sed -i 's|eval `CGO_ENABLED=0 GOOS=$($go env GOHOSTOS) GOARCH=$($go env GOHOSTARCH) $go run ./cmd/mkversion`|eval `CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat $go run ./cmd/mkversion`|g' build_dist.sh
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
-          #./tool/yarn --cwd client/web build
-          ./build_dist.sh tailscale.com/cmd/tailscale
-          ./build_dist.sh tailscale.com/cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
           find ../src -name "tailscale"
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
