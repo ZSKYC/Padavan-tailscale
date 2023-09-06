@@ -1,0 +1,68 @@
+name: Build and Release
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      ver: ${{ steps.getversion.outputs.ver }}
+      cver: ${{ steps.getversion.outputs.cver }}
+    steps:
+      -
+        name: Get version
+        id: getversion
+        run: |
+          ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
+          cver=`curl https://api.github.com/repos/lmq8267/cloudflared/releases/latest | jq -r '.tag_name'`
+          echo "ver=${ver}" >> $GITHUB_OUTPUT
+          echo "cver=${cver}" >> $GITHUB_OUTPUT
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    if: ${{ needs.check.outputs.ver != needs.check.outputs.cver }}
+    steps:
+      - 
+        name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21.0
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Build
+        run: |
+          git clone https://github.com/tailscale/tailscale -b ${{ needs.check.outputs.ver }} ../src
+          git clone https://github.com/lmq8267/cloudflared.git /opt/st
+          cd ../src
+          sed -i 's|eval `CGO_ENABLED=0 GOOS=$($go env GOHOSTOS) GOARCH=$($go env GOHOSTARCH) $go run ./cmd/mkversion`|eval `CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat $go run ./cmd/mkversion`|g' build_dist.sh
+          tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
+          chmod 777 /opt/upx-3.95-amd64_linux/upx
+          chmod 777 /opt/st/strip
+          ./tool/yarn --cwd client/web build
+          ./build_dist.sh tailscale.com/cmd/tailscale
+          ./build_dist.sh tailscale.com/cmd/tailscaled
+          find ../src -name "tailscale"
+          /opt/st/strip tailscale
+          /opt/st/strip tailscaled
+          /opt/upx-3.95-amd64_linux/upx --lzma --best tailscale
+          /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
+          echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
+          echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
+      - 
+        name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.c8 }}
+          tag_name: ${{ needs.check.outputs.ver }}
+          files: |
+              ../src/tailscale
+              ../src/tailscale.txt
+              ../src/tailscaled
+              ../src/tailscaled.txt
+     
