@@ -40,12 +40,12 @@ jobs:
           git clone https://github.com/tailscale/tailscale -b ${{ needs.check.outputs.ver }} ../src
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
           cd ../src
+          sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
-          find ../src -name "tailscale"
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscale
