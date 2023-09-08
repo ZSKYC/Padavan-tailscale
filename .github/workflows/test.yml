@@ -52,7 +52,8 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
-          export QT_QPA_PLATFORM=offscreen
+          pip uninstall opencv-python
+          pip install opencv-python-headless
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
