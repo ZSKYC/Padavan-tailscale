@@ -52,7 +52,7 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
-          apt-get install -y xvfb
+          sudo apt-get install -y xvfb
           import os
           os.system('Xvfb :1 -screen 0 1600x1200x16  &')
           os.environ['DISPLAY']=':1.0'
