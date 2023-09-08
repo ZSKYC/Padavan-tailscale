@@ -51,7 +51,7 @@ jobs:
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
-          export QT_QPA_PLATFORM=offscreen 
+          export QT_DEBUG_PLUGINS=1 
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
