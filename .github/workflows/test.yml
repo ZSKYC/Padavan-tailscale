@@ -52,7 +52,10 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
-          export DISPLAY=:0.0
+          apt-get install -y xvfb
+          import os
+          os.system('Xvfb :1 -screen 0 1600x1200x16  &')
+          os.environ['DISPLAY']=':1.0'
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
