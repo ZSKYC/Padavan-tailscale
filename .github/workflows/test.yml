@@ -52,7 +52,10 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
-          sudo strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+          sudo apt-get install xvfb
+          pip install pyvirtualdisplay
+          sudo apt-get install libgl1-mesa-dev
+          sudo apt-get install python-opengl
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
