@@ -71,7 +71,7 @@ jobs:
           libxcb-xinerama0 \
           libopengl0 \
           libxcb-cursor0
-          pip3 install pyqt5
+          pip3 install pyqt6
           pip  install pyqtgraph
           python -m pip list
           echo pyqtgraph system info
