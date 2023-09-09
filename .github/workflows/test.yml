@@ -52,9 +52,10 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
-          sudo apt-get install xvfb
-          pip install pyvirtualdisplay
-          sudo apt-get install libgl1-mesa-dev
+          !apt-get install -y xvfb python-opengl ffmpeg > /dev/null 2>&1
+          from pyvirtualdisplay import Display
+          display = Display(visible=0, size=(1400, 900))
+          display.start()
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
