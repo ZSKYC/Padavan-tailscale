@@ -73,7 +73,7 @@ jobs:
           echo pyqtgraph system info
           python -c "import pyqtgraph as pg; pg.systemInfo()"
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.glinfo
-          xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.get_resolution
+          xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.get_resolutio
           python -m pyqtgraph.util.glinfo
           python -m pyqtgraph.util.get_resolution
           ./tool/yarn --cwd client/web build
