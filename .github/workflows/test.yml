@@ -2,7 +2,7 @@ name: test
 
 on:
   schedule:
-     #- cron: '0 3,20 * * *'
+     - cron: '0 3,20 * * *'
   workflow_dispatch:
 
 jobs:
@@ -52,6 +52,24 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
+          sudo apt-get update -y
+          sudo apt-get install --no-install-recommends -y \
+          libxkbcommon-x11-0 \
+          x11-utils \
+          libyaml-dev \
+          libegl1-mesa \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-xinerama0 \
+          libopengl0 \
+          libxcb-cursor0
+          xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.glinfo
+          xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.get_resolution
+          python -m pyqtgraph.util.glinfo
+          python -m pyqtgraph.util.get_resolution
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
