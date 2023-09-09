@@ -68,14 +68,14 @@ jobs:
           libxcb-cursor0
           sudo apt-get install python3-pyqtgraph
           #pip install pyqtgraph
-          #pip install pyqt6
+          pip install pyqt5
           python -m pip list
           echo pyqtgraph system info
           python -c "import pyqtgraph as pg; pg.systemInfo()"
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.glinfo
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.get_resolution
-          #python -m pyqtgraph.util.glinfo
-          #python -m pyqtgraph.util.get_resolution
+          python -m pyqtgraph.util.glinfo
+          python -m pyqtgraph.util.get_resolution
           ./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
