@@ -66,7 +66,7 @@ jobs:
           libxcb-xinerama0 \
           libopengl0 \
           libxcb-cursor0
-          pip install pyqtgraph
+          pip  install pyqtgraph=0.11.1
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.glinfo
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" python -m pyqtgraph.util.get_resolutio
           python -m pyqtgraph.util.glinfo
