@@ -54,7 +54,7 @@ jobs:
           export QT_DEBUG_PLUGINS=1 
           
           
-          python -m pip install -r .github/workflows/requirements.txt PyQt6
+          python -m pip install -r ../src/requirements.txt PyQt6
           sudo apt-get update -y
           sudo apt-get install --no-install-recommends -y \
           libxkbcommon-x11-0 \
