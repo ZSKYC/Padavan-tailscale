@@ -67,7 +67,7 @@ jobs:
           libopengl0 \
           libxcb-cursor0
           sudo apt-get install python3-pyqtgraph
-          pip install pyqtgraph
+          sudo pip install pyqtgraph
           pip install pyqt6
           python -m pip list
           echo pyqtgraph system info
