@@ -52,6 +52,7 @@ jobs:
           chmod 777 /opt/st/strip
           sudo apt-get update && sudo apt-get install vite
           export QT_DEBUG_PLUGINS=1 
+          sudo chmod 777 /etc/profile
           sudo echo "export DISPLAY=:0.0" >>/etc/profile
           source /etc/profile
           ./tool/yarn --cwd client/web build
