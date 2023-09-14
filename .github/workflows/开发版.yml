@@ -11,7 +11,7 @@ jobs:
       tag: ${{ steps.getversion.outputs.tag }}
       ver: ${{ steps.getversion.outputs.ver }}
       cver: ${{ steps.getversion.outputs.cver }}
-      data: ${{ steps.getversion.outputs.date }}
+      date: ${{ steps.getversion.outputs.date }}
     steps:
       -
         name: Get version
