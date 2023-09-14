@@ -94,7 +94,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.c8 }}
-          body: 开发版  （txt后缀为程序的MD5校验值）
+          body: 开发版 -每日更新 （txt后缀为程序的MD5校验值）
           prerelease: true
           tag_name: ${{ needs.check.outputs.ver }}
           files: |
