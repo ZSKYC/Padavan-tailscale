@@ -96,6 +96,7 @@ jobs:
         with:
           token: ${{ secrets.c8 }}
           body: 开发版  （txt后缀为程序的MD5校验值）
+          prerelease: true
           tag_name: $vtag
           files: |
               ../src/tailscale
