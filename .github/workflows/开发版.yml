@@ -18,7 +18,9 @@ jobs:
         name: Get version
         id: getversion
         run: |
-          ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
+          git clone -b main https://github.com/tailscale/tailscale ../tag
+          cd ../tag
+          ver="$(cat VERSION.txt)"
           tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name' | tr -d 'v'`
           cver=`curl https://api.github.com/repos/lmq8267/tailscale/releases/latest | jq -r '.tag_name'`
           echo "tag=${tag}" >> $GITHUB_OUTPUT
@@ -89,7 +91,6 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
-          vtag="$(cat VERSION.txt)"
       - 
         name: Release
         uses: softprops/action-gh-release@v1
@@ -97,7 +98,7 @@ jobs:
           token: ${{ secrets.c8 }}
           body: 开发版  （txt后缀为程序的MD5校验值）
           prerelease: true
-          tag_name: $vtag
+          tag_name: ${{ needs.check.outputs.ver }}
           files: |
               ../src/tailscale
               ../src/tailscale.txt
