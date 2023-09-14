@@ -2,7 +2,7 @@ name: 预发布开发版
 
 on:
   schedule:
-     - cron: '0 3,20 * * *'
+     - cron: '0 3 * * *'
   workflow_dispatch:
 jobs:
   check:
