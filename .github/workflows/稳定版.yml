@@ -1,4 +1,4 @@
-name: Build and Release
+name: 稳定版
 
 on:
   schedule:
