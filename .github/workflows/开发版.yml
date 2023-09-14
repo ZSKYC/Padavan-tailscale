@@ -11,6 +11,7 @@ jobs:
       tag: ${{ steps.getversion.outputs.tag }}
       ver: ${{ steps.getversion.outputs.ver }}
       cver: ${{ steps.getversion.outputs.cver }}
+      data: ${{ steps.getversion.outputs.date }}
     steps:
       -
         name: Get version
@@ -24,6 +25,7 @@ jobs:
           echo "tag=${tag}" >> $GITHUB_OUTPUT
           echo "ver=${ver}" >> $GITHUB_OUTPUT
           echo "cver=${cver}" >> $GITHUB_OUTPUT
+          echo "date=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
@@ -94,7 +96,10 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.c8 }}
-          body: 开发版 -每日更新 （txt后缀为程序的MD5校验值）
+          body: |
+           开发版 -每日更新一次 
+           txt后缀为程序的MD5校验值
+           更新时间：${{ needs.check.outputs.date }}
           prerelease: true
           tag_name: ${{ needs.check.outputs.ver }}
           files: |
