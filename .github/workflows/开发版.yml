@@ -89,12 +89,14 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
+          vtag="$(cat VERSION.txt)"
       - 
         name: Release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.c8 }}
-          automatic_release_tag: ${{ needs.check.outputs.ver }}
+          token: ${{ secrets.c8 }}
+          body: 开发版  （txt后缀为程序的MD5校验值）
+          tag_name: $vtag
           files: |
               ../src/tailscale
               ../src/tailscale.txt
