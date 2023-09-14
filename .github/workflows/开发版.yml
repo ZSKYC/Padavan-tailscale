@@ -1,8 +1,8 @@
-name: test
+name: 预发布开发版
 
 on:
-  #schedule:
-     #- cron: '0 3,20 * * *'
+  schedule:
+     - cron: '0 3,20 * * *'
   workflow_dispatch:
   release:
      types: [published]
@@ -41,7 +41,7 @@ jobs:
       - 
         name: Build
         run: |
-          git clone https://github.com/tailscale/tailscale ../src
+          git clone -b main https://github.com/tailscale/tailscale ../src
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
           cd ../src
           sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-ERR-BuildInfo"|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
