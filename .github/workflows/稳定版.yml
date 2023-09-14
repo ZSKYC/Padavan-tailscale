@@ -63,8 +63,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.c8 }}
-          body: 稳定版
-                txt后缀为程序的MD5校验值
+          body: 稳定版\n txt后缀为程序的MD5校验值
           tag_name: ${{ needs.check.outputs.tag }}
           files: |
               ../src/tailscale
