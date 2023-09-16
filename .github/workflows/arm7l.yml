@@ -53,6 +53,8 @@ jobs:
           tar -xvf /opt/st/upx-4.1.0-amd64_linux.tar.xz -C /opt
           tar -xvf /opt/st/tailscale.tar.gz -C /opt/st
           rm -rf /opt/st/tailscale.tar.gz
+          /opt/st/strip tailscale
+          /opt/st/strip tailscaled
           /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
           /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
