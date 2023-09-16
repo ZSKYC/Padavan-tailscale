@@ -68,7 +68,7 @@ jobs:
           cd /opt/st
           tar czvf tailscale.tar.gz tailscale
           echo $(md5sum /opt/st/tailscale.tar.gz | awk '{print $1;}') >MD5.txt
-          cd ../src
+          cd /opt/st/tailscale/bin
           mv tailscale tailscale_upx
           mv tailscaled tailscaled_upx
       - 
@@ -92,8 +92,8 @@ jobs:
               ../src/tailscale.txt
               /opt/src/tailscaled
               ../src/tailscaled.txt
-              ../src/tailscale_upx
-              ../src/tailscaled_upx
+              /opt/st/tailscale/bin/tailscale_upx
+              /opt/st/tailscale/bin/tailscaled_upx
       - 
        name: 删除工作流
        uses: GitRML/delete-workflow-runs@main
