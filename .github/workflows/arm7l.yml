@@ -49,6 +49,8 @@ jobs:
           sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/koolshare/configs/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
+          sudo apt-get remove upx-ucl
+          sudo apt-get install upx-ucl
           upx version
           upx --lzma --best tailscale
           upx --lzma --best tailscaled
