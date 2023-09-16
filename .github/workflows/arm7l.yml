@@ -55,10 +55,10 @@ jobs:
           rm -rf /opt/st/tailscale.tar.gz
           chmod 777 /opt/st/strip
           chmod 777 /opt/upx-4.1.0-amd64_linux/upx
-          /opt/st/strip tailscale
-          /opt/st/strip tailscaled
-          /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
-          /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscaled
+          #/opt/st/strip tailscale
+          #/opt/st/strip tailscaled
+          #/opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
+          #/opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
           cp -rf tailscale /opt/st/tailscale/bin/tailscale
