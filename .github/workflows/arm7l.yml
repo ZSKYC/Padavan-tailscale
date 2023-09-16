@@ -50,7 +50,7 @@ jobs:
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
-          tar -xvf /opt/st/upx-4.10-amd64_linux.tar.xz -C /opt
+          tar -xvf /opt/st/upx-4.1.0-amd64_linux.tar.xz -C /opt
           /opt/upx --lzma --best tailscale
           /opt/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
