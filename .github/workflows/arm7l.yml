@@ -17,9 +17,7 @@ jobs:
         name: 版本比较
         id: getversion
         run: |
-          git clone -b main https://github.com/tailscale/tailscale ../tag
-          cd ../tag
-          ver="$(cat VERSION.txt)"
+          ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
           tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name' | tr -d 'v'`
           cver=`curl https://api.github.com/repos/lmq8267/tailscale/releases/latest | jq -r '.tag_name'`
           echo "tag=${tag}" >> $GITHUB_OUTPUT
