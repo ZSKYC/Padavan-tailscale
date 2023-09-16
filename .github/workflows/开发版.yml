@@ -14,7 +14,7 @@ jobs:
       date: ${{ steps.getversion.outputs.date }}
     steps:
       -
-        name: Get version
+        name: 版本比较
         id: getversion
         run: |
           git clone -b main https://github.com/tailscale/tailscale ../tag
@@ -33,15 +33,15 @@ jobs:
     if: ${{ needs.check.outputs.ver != needs.check.outputs.cver }}
     steps:
       - 
-        name: Set up Go
+        name: 安装go
         uses: actions/setup-go@v4
         with:
           go-version: 1.21.0
       -
-        name: Checkout
+        name: 检查代码仓库
         uses: actions/checkout@v3
       - 
-        name: Build
+        name: 编译
         run: |
           git clone -b main https://github.com/tailscale/tailscale ../src
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
@@ -92,7 +92,7 @@ jobs:
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
       - 
-        name: Release
+        name: 发布
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.c8 }}
@@ -107,4 +107,11 @@ jobs:
               ../src/tailscale.txt
               ../src/tailscaled
               ../src/tailscaled.txt
+      - 
+       name: 删除工作流
+       uses: GitRML/delete-workflow-runs@main
+       with:
+        token: ${{ secrets.c8 }}
+        retain_days: 2
+        keep_minimum_runs: 0
      
