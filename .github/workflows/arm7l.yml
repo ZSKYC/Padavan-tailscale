@@ -64,7 +64,7 @@ jobs:
           echo $(md5sum /opt/tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum /opt/tailscaled | awk '{print $1;}') >tailscaled.txt
           cp -rf tailscale /opt/st/tailscale/bin/tailscale
-          cp -rf tailscale /opt/st/tailscale/bin/tailscale
+          cp -rf tailscaled /opt/st/tailscale/bin/tailscaled
           cd /opt/st
           tar czvf tailscale.tar.gz tailscale
           echo $(md5sum /opt/st/tailscale.tar.gz | awk '{print $1;}') >MD5.txt
