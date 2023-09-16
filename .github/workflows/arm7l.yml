@@ -49,8 +49,6 @@ jobs:
           sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/koolshare/configs/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
-          /opt/st/strip tailscale
-          /opt/st/strip tailscaled
           upx -version
           upx --lzma --best tailscale
           upx --lzma --best tailscaled
@@ -66,7 +64,7 @@ jobs:
            txt后缀为程序的MD5校验值
            更新时间：${{ needs.check.outputs.date }}
           prerelease: true
-          tag_name: ${{ needs.check.outputs.ver }}
+          tag_name: arm7l-${{ needs.check.outputs.ver }}
           files: |
               ../src/tailscale
               ../src/tailscale.txt
