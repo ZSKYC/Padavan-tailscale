@@ -73,7 +73,9 @@ jobs:
           token: ${{ secrets.c8 }}
           body: |
            arm7l平台 -稳定版 
-           适用于koolshare梅林 384-386
+           适用于koolshare梅林 384-386软件中心
+           不保证绝对适配
+           下载tailscale.tar.gz 离线安装
            txt后缀为程序的MD5校验值
            更新时间：${{ needs.check.outputs.date }}
           prerelease: true
