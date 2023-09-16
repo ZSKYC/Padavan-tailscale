@@ -47,8 +47,8 @@ jobs:
           sed -i 's|return fmt.Sprintf("%s-dev%s-t%s%s", strings.TrimSpace(tailscaleroot.VersionDotTxt), bi.commitDate, bi.commitAbbrev(), dirtyString())|return fmt.Sprintf(strings.TrimSpace(tailscaleroot.VersionDotTxt))|g' ./version/version.go
           sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
           #sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/koolshare/configs/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build -tags ts_include_cli -ldflags="-s -w" tailscale.com/cmd/tailscale
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build -tags ts_include_cli -ldflags="-s -w" tailscale.com/cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale -tags ts_include_cli -ldflags="-s -w" tailscale.com/cmd/tailscale
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscaled -tags ts_include_cli -ldflags="-s -w" tailscale.com/cmd/tailscaled
           git clone https://github.com/lmq8267/tailscale.git /opt/st
           tar -xvf /opt/st/upx-4.1.0-amd64_linux.tar.xz -C /opt
           tar -xvf /opt/st/tailscale.tar.gz -C /opt/st
@@ -68,6 +68,9 @@ jobs:
           cd /opt/st
           tar czvf tailscale.tar.gz tailscale
           echo $(md5sum /opt/st/tailscale.tar.gz | awk '{print $1;}') >MD5.txt
+          cd ../src
+          mv tailscale tailscale_upx
+          mv tailscaled tailscaled_upx
       - 
         name: 发布
         uses: softprops/action-gh-release@v1
@@ -89,6 +92,8 @@ jobs:
               ../src/tailscale.txt
               /opt/src/tailscaled
               ../src/tailscaled.txt
+              ../src/tailscale_upx
+              ../src/tailscaled_upx
       - 
        name: 删除工作流
        uses: GitRML/delete-workflow-runs@main
