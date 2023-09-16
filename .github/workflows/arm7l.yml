@@ -49,12 +49,19 @@ jobs:
           sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/koolshare/configs/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=5 GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
-          git clone https://github.com/lmq8267/cloudflared.git /opt/st
+          git clone https://github.com/lmq8267/tailscale.git /opt/st
           tar -xvf /opt/st/upx-4.1.0-amd64_linux.tar.xz -C /opt
+          tar -xvf /opt/st/tailscale.tar.gz -C /opt/st
+          rm -rf /opt/st/tailscale.tar.gz
           /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
           /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
+          cp -rf tailscale /opt/st/tailscale/bin/tailscale
+          cp -rf tailscale /opt/st/tailscale/bin/tailscale
+          cd /opt/st
+          tar czvf tailscale.tar.gz tailscale
+          echo $(md5sum /opt/st/tailscale.tar.gz | awk '{print $1;}') >MD5.txt
       - 
         name: 发布
         uses: softprops/action-gh-release@v1
@@ -62,11 +69,14 @@ jobs:
           token: ${{ secrets.c8 }}
           body: |
            arm7l平台 -稳定版 
+           适用于koolshare梅林 384-386
            txt后缀为程序的MD5校验值
            更新时间：${{ needs.check.outputs.date }}
           prerelease: true
           tag_name: arm7l-${{ needs.check.outputs.ver }}
           files: |
+              /opt/st/tailscale.tar.gz
+              /opt/st/MD5.txt
               ../src/tailscale
               ../src/tailscale.txt
               ../src/tailscaled
