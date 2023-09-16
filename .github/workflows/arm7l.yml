@@ -53,6 +53,8 @@ jobs:
           tar -xvf /opt/st/upx-4.1.0-amd64_linux.tar.xz -C /opt
           tar -xvf /opt/st/tailscale.tar.gz -C /opt/st
           rm -rf /opt/st/tailscale.tar.gz
+          chmod 777 /opt/st/strip
+          chmod 777 /opt/upx-4.1.0-amd64_linux/upx
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
           /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
