@@ -59,8 +59,8 @@ jobs:
           cp -f tailscaled /opt/tailscaled
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
-          #/opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
-          #/opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscaled
+          /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscale
+          /opt/upx-4.1.0-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum /opt/tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum /opt/tailscaled | awk '{print $1;}') >tailscaled.txt
           cp -rf tailscale /opt/st/tailscale/bin/tailscale
