@@ -105,9 +105,13 @@ jobs:
           cp -rf ../src/tailscale.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale.txt"
           cp -rf ../src/tailscaled.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled.txt"
           cd /opt/tai
+          if git status --porcelain | grep .; then
           git add .
           git commit -am "开发版：${{ needs.check.outputs.ver }} 更新时间： $(date '+%Y-%m-%d %H:%M:%S')"
           git push --quiet "https://${{ secrets.c8 }}@github.com/lmq8267/tailscale.git"
+          else
+          echo "没有任何变动，无需上传提交！"
+          fi 
       - 
         name: 发布
         uses: softprops/action-gh-release@v1
