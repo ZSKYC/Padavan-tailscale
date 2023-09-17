@@ -91,6 +91,23 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
+      - name: 设置机器人
+        run : |
+         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+         git config --global user.name "github-actions[bot]"
+         sudo timedatectl set-timezone "Asia/Shanghai"
+      - name: 上传
+        run: |
+          git clone https://github.com/lmq8267/tailscale.git /opt/tai
+          [ ! -d "/opt/tai/install/开发版${{ needs.check.outputs.ver }}" ] && mkdir -p "/opt/tai/install/开发版${{ needs.check.outputs.ver }}"
+          cp -rf ../src/tailscale "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale"
+          cp -rf ../src/tailscaled "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled"
+          cp -rf ../src/tailscale.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale.txt"
+          cp -rf ../src/tailscaled.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled.txt"
+          cd /opt/tai
+          git add .
+          git commit -am "开发版：${{ needs.check.outputs.ver }} 更新时间： $(date '+%Y-%m-%d %H:%M:%S')"
+          git push --quiet "https://${{ secrets.c8 }}@github.com/lmq8267/tailscale.git"
       - 
         name: 发布
         uses: softprops/action-gh-release@v1
