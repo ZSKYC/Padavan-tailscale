@@ -88,6 +88,7 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_lite
           echo $(md5sum tailscale_lite | awk '{print $1;}') >tailscale_lite.txt
           echo $(md5sum tailscaled_lite | awk '{print $1;}') >tailscaled_lite.txt
+          echo "build_time=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       - name: 设置机器人
         run : |
          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -117,7 +118,7 @@ jobs:
         with:
           token: ${{ secrets.c8 }}
           body: |
-           稳定版 程序 更新时间： $(date '+%Y-%m-%d %H:%M:%S')
+           稳定版 - 更新时间： ${{ env.build_time }}
 
            常规版：tailscale 和 tailscaled 其中tailscale.txt和tailscaled.txt 为其MD5校验值
 
