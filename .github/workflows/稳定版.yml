@@ -97,16 +97,16 @@ jobs:
         run: |
           git clone https://github.com/lmq8267/tailscale.git /opt/tai
           [ ! -d "/opt/tai/install/${{ needs.check.outputs.tag }}" ] && mkdir -p "/opt/tai/install/${{ needs.check.outputs.tag }}"
-          cp -rf /opt/tainomal/tailscale "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscale"
-          cp -rf /opt/tainomal/tailscaled "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscaled"
-          cp -rf /opt/tainomal/tailscale.txt "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscale.txt"
-          cp -rf /opt/tainomal/tailscaled.txt "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscaled.txt"
-          cp -rf /opt/taifull/tailscaled_full "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscaled_full"
-          cp -rf /opt/taifull/tailscaled_full.txt "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscaled_full.txt"
-          cp -rf /opt/tailite/tailscale_lite "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscale_lite"
-          cp -rf /opt/tailite/tailscaled_lite "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscaled_lite"
-          cp -rf /opt/tailite/tailscale_lite.txt "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscale_lite.txt"
-          cp -rf /opt/tailite/tailscaled_lite.txt "/opt/tai/install/${{ needs.check.outputs.ver }}/tailscaled_lite.txt"
+          cp -rf /opt/tainomal/tailscale "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale"
+          cp -rf /opt/tainomal/tailscaled "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled"
+          cp -rf /opt/tainomal/tailscale.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale.txt"
+          cp -rf /opt/tainomal/tailscaled.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled.txt"
+          cp -rf /opt/taifull/tailscaled_full "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_full"
+          cp -rf /opt/taifull/tailscaled_full.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_full.txt"
+          cp -rf /opt/tailite/tailscale_lite "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale_lite"
+          cp -rf /opt/tailite/tailscaled_lite "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_lite"
+          cp -rf /opt/tailite/tailscale_lite.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale_lite.txt"
+          cp -rf /opt/tailite/tailscaled_lite.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_lite.txt"
           cd /opt/tai
           git add .
           git commit -am "稳定版：${{ needs.check.outputs.tag }} 更新时间： $(date '+%Y-%m-%d %H:%M:%S')"
