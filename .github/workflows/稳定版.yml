@@ -88,7 +88,7 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_lite
           echo $(md5sum tailscale_lite | awk '{print $1;}') >tailscale_lite.txt
           echo $(md5sum tailscaled_lite | awk '{print $1;}') >tailscaled_lite.txt
-          echo "build_time=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+          echo "build_time=$(TZ=UTC-8 date +%Y-%m-%d' '%H:%M:%S)" >> $GITHUB_ENV
       - name: 设置机器人
         run : |
          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
