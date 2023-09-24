@@ -129,7 +129,7 @@ jobs:
            迷你版需要改名为tailscaled 并用ln -sf tailscaled tailscale 软连接出tailscale子程序
            迷你版为两个程序集中在一个里面使用软连接分出子程序
            
-           精简版为精简掉一些没用的日志提醒之类的 https://tailscale.com/kb/1207/small-tailscale/
+           精简版为省略调试信息和较少使用的功能等内容 https://tailscale.com/kb/1207/small-tailscale/
            
           tag_name: ${{ needs.check.outputs.tag }}
           files: |
