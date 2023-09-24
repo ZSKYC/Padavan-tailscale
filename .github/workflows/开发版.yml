@@ -97,10 +97,10 @@ jobs:
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
           cd /opt/src
           go clean
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_include_cli -ldflags="-s -w" ./cmd/tailscaled
-          /opt/st/strip tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled.combined -tags ts_include_cli -ldflags="-s -w" ./cmd/tailscaled
+          /opt/st/strip tailscaled.combined
           mkdir -p /opt/taifull
-          cp -rf tailscaled /opt/taifull/tailscaled_full
+          cp -rf tailscaled.combined /opt/taifull/tailscaled_full
           cd /opt/taifull
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_full
           echo $(md5sum tailscaled_full | awk '{print $1;}') >tailscaled_full.txt
