@@ -87,10 +87,37 @@ jobs:
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
+          mkdir -p /opt/tainomal
+          cp -rf tailscale /opt/tainomal/tailscale
+          cd /opt/tainomal
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscale
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
+          cd ../src
+          go clean
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_include_cli -ldflags="-s -w" ./cmd/tailscaled
+          /opt/st/strip tailscaled
+          mkdir -p /opt/taifull
+          cp -rf tailscaled /opt/taifull/tailscaled_full
+          cd /opt/taifull
+          /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_full
+          echo $(md5sum tailscaled_full | awk '{print $1;}') >tailscaled_full.txt
+          cd ../src
+          go clean
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscale -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-s -w" ./cmd/tailscale
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-s -w" ./cmd/tailscaled
+          /opt/st/strip tailscale
+          /opt/st/strip tailscaled
+          mkdir -p /opt/tailite
+          cp -rf tailscaled /opt/tailite/tailscaled_lite
+          cp -rf tailscale /opt/tailite/tailscale_lite
+          cd /opt/tailite
+          /opt/upx-3.95-amd64_linux/upx --lzma --best tailscale_lite
+          /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_lite
+          echo $(md5sum tailscale_lite | awk '{print $1;}') >tailscale_lite.txt
+          echo $(md5sum tailscaled_lite | awk '{print $1;}') >tailscaled_lite.txt
+          
       - name: 设置机器人
         run : |
          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -100,10 +127,16 @@ jobs:
         run: |
           git clone https://github.com/lmq8267/tailscale.git /opt/tai
           [ ! -d "/opt/tai/install/开发版${{ needs.check.outputs.ver }}" ] && mkdir -p "/opt/tai/install/开发版${{ needs.check.outputs.ver }}"
-          cp -rf ../src/tailscale "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale"
-          cp -rf ../src/tailscaled "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled"
-          cp -rf ../src/tailscale.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale.txt"
-          cp -rf ../src/tailscaled.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled.txt"
+          cp -rf /opt/tainomal/tailscale "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale"
+          cp -rf /opt/tainomal/tailscaled "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled"
+          cp -rf /opt/tainomal/tailscale.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale.txt"
+          cp -rf /opt/tainomal/tailscaled.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled.txt"
+          cp -rf /opt/taifull/tailscaled_full "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled_full"
+          cp -rf /opt/taifull/tailscaled_full.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled_full.txt"
+          cp -rf /opt/tailite/tailscale_lite "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale_lite"
+          cp -rf /opt/tailite/tailscaled_lite "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled_lite"
+          cp -rf /opt/tailite/tailscale_lite.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscale_lite.txt"
+          cp -rf /opt/tailite/tailscaled_lite.txt "/opt/tai/install/开发版${{ needs.check.outputs.ver }}/tailscaled_lite.txt"
           cd /opt/tai
           if git status --porcelain | grep .; then
           git add .
@@ -119,15 +152,31 @@ jobs:
           token: ${{ secrets.c8 }}
           body: |
            开发版 -每日更新一次 
-           txt后缀为程序的MD5校验值
+           
+           常规版：tailscale 和 tailscaled 其中tailscale.txt和tailscaled.txt 为其MD5校验值
+
+           迷你版：tailscaled_full  其中tailscaled_full.txt 为其MD5校验值
+
+           精简版：tailscale_lite和tailscaled_lite 其中tailscale_lite.txt和tailscaled_lite 为其MD5校验值
+
+           迷你版需要改名为tailscaled 并用ln -sf tailscaled tailscale 软连接出tailscale子程序
+
+           迷你版为两个程序集中在一个里面使用软连接分出子程序
+           精简版为精简掉一些没用的日志提醒之类的
            更新时间：${{ needs.check.outputs.date }}
           prerelease: true
           tag_name: ${{ needs.check.outputs.ver }}
           files: |
-              ../src/tailscale
-              ../src/tailscale.txt
-              ../src/tailscaled
-              ../src/tailscaled.txt
+              /opt/tainomal/tailscale
+              /opt/tainomal/tailscale.txt
+              /opt/tainomal/tailscaled
+              /opt/tainomal/tailscaled.txt
+              /opt/taifull/tailscaled_full
+              /opt/taifull/tailscaled_full.txt
+              /opt/tailite/tailscale_lite
+              /opt/tailite/tailscale_lite.txt
+              /opt/tailite/tailscaled_lite
+              /opt/tailite/tailscaled_lite.txt
       - 
        name: 删除工作流
        uses: GitRML/delete-workflow-runs@main
