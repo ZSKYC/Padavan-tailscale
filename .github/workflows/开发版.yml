@@ -152,7 +152,7 @@ jobs:
         with:
           token: ${{ secrets.c8 }}
           body: |
-           开发版 -每日更新一次 
+           开发版 -每日更新一次 , 更新时间：${{ needs.check.outputs.date }}
            
            常规版：tailscale 和 tailscaled 其中tailscale.txt和tailscaled.txt 为其MD5校验值
 
@@ -164,7 +164,7 @@ jobs:
 
            迷你版为两个程序集中在一个里面使用软连接分出子程序
            精简版为精简掉一些没用的日志提醒之类的 https://tailscale.com/kb/1207/small-tailscale/
-           更新时间：${{ needs.check.outputs.date }}
+           
           prerelease: true
           tag_name: ${{ needs.check.outputs.ver }}
           files: |
