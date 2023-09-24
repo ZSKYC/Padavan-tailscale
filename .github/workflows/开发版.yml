@@ -43,9 +43,9 @@ jobs:
       - 
         name: 编译
         run: |
-          git clone -b main https://github.com/tailscale/tailscale ../src
+          git clone -b main https://github.com/tailscale/tailscale /opt/src
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
-          cd ../src
+          cd /opt/src
           sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-ERR-BuildInfo"|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
           sed -i 's|return fmt.Sprintf("%s-dev%s-t%s%s", strings.TrimSpace(tailscaleroot.VersionDotTxt), bi.commitDate, bi.commitAbbrev(), dirtyString())|return fmt.Sprintf(strings.TrimSpace(tailscaleroot.VersionDotTxt))|g' ./version/version.go
           sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
@@ -95,7 +95,7 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
-          cd ../src
+          cd /opt/src
           go clean
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_include_cli -ldflags="-s -w" ./cmd/tailscaled
           /opt/st/strip tailscaled
@@ -104,7 +104,7 @@ jobs:
           cd /opt/taifull
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_full
           echo $(md5sum tailscaled_full | awk '{print $1;}') >tailscaled_full.txt
-          cd ../src
+          cd /opt/src
           go clean
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscale -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-s -w" ./cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-s -w" ./cmd/tailscaled
@@ -163,7 +163,7 @@ jobs:
            迷你版需要改名为tailscaled 并用ln -sf tailscaled tailscale 软连接出tailscale子程序
 
            迷你版为两个程序集中在一个里面使用软连接分出子程序
-           精简版为精简掉一些没用的日志提醒之类的
+           精简版为精简掉一些没用的日志提醒之类的 https://tailscale.com/kb/1207/small-tailscale/
            更新时间：${{ needs.check.outputs.date }}
           prerelease: true
           tag_name: ${{ needs.check.outputs.ver }}
