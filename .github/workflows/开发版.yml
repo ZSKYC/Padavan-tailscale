@@ -89,6 +89,7 @@ jobs:
           /opt/st/strip tailscaled
           mkdir -p /opt/tainomal
           cp -rf tailscale /opt/tainomal/tailscale
+          cp -rf tailscaled /opt/tainomal/tailscaled
           cd /opt/tainomal
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscale
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
