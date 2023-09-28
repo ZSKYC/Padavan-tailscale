@@ -153,20 +153,22 @@ jobs:
         with:
           token: ${{ secrets.c8 }}
           body: |
-           开发版 -每日更新一次 , 更新时间：${{ needs.check.outputs.date }}
-           密钥存储位置已改为：/etc/storage/tailscale/lib/tailscaled.state
-           
-           常规版：tailscale 和 tailscaled 其中tailscale.txt和tailscaled.txt 为其MD5校验值
+           > ### 开发版 -每日更新一次 , 更新时间：${{ needs.check.outputs.date }}
+           - **密钥存储位置已改为：/etc/storage/tailscale/lib/tailscaled.state**
 
-           迷你版：tailscaled_full  其中tailscaled_full.txt 为其MD5校验值
+           ### **各版本区别**
+           - **常规版**：tailscale 和 tailscaled 其中tailscale.txt和tailscaled.txt 为其MD5校验值
 
-           精简版：tailscale_lite和tailscaled_lite 其中tailscale_lite.txt和tailscaled_lite 为其MD5校验值
+           - **迷你版**：tailscaled_full  其中tailscaled_full.txt 为其MD5校验值
 
-           迷你版需要改名为tailscaled 并用ln -sf tailscaled tailscale 软连接出tailscale子程序
+           - **精简版**：tailscale_lite和tailscaled_lite 其中tailscale_lite.txt和tailscaled_lite 为其MD5校验值
 
-           迷你版为两个程序集中在一个里面使用软连接分出子程序
-           精简版为精简掉一些没用的日志提醒之类的 https://tailscale.com/kb/1207/small-tailscale/
-           
+           **迷你版需要改名为tailscaled 并用ln -sf tailscaled tailscale 软连接出tailscale子程序**
+
+           **迷你版为两个程序集中在一个里面使用软连接分出子程序**
+           **[精简版为精简掉一些没用的日志提醒之类的](https://tailscale.com/kb/1207/small-tailscale/)**
+
+           **[官方更新说明](https://github.com/tailscale/tailscale/releases)**
           prerelease: true
           tag_name: ${{ needs.check.outputs.ver }}
           files: |
