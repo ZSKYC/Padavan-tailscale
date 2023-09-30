@@ -54,36 +54,36 @@ jobs:
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
-          sudo apt-get update && sudo apt-get install vite
-          export QT_DEBUG_PLUGINS=1 
-          sudo apt-get update -y
-          DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends \
-          xvfb \
-          x11-utils \
-          libxkbcommon-x11-0 \
-          libxcb-icccm4 \
-          libxcb-image0 \
-          libxcb-keysyms1 \
-          libxcb-randr0 \
-          libxcb-render-util0 \
-          libxcb-xkb1 \
-          libegl1-mesa \
-          libxcb-xinerama0 \
-          libglib2.0-0 \
-          libopengl0
-          sudo apt-get install python3-pyqtgraph
+          #sudo apt-get update && sudo apt-get install vite
+          #export QT_DEBUG_PLUGINS=1 
+          #sudo apt-get update -y
+          #DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends \
+          #xvfb \
+          #x11-utils \
+          #libxkbcommon-x11-0 \
+          #libxcb-icccm4 \
+          #libxcb-image0 \
+          #libxcb-keysyms1 \
+          #libxcb-randr0 \
+          #libxcb-render-util0 \
+          #libxcb-xkb1 \
+          #libegl1-mesa \
+          #libxcb-xinerama0 \
+          #libglib2.0-0 \
+          #libopengl0
+          #sudo apt-get install python3-pyqtgraph
           #pip install pyqtgraph
-          pip install pyqt5
-          echo python location: `which python`
-          echo python version: `python --version`
-          echo pytest location: `which pytest`
-          echo installed packages
-          python -m pip list
-          echo pyqtgraph system info
-          python -c "import pyqtgraph as pg; pg.systemInfo()"
-          xvfb-run python3 -m pyqtgraph.util.get_resolution
-          ./tool/yarn --cwd client/web install
-          ./tool/yarn --cwd client/web build
+          #pip install pyqt5
+          #echo python location: `which python`
+          #echo python version: `python --version`
+          #echo pytest location: `which pytest`
+          #echo installed packages
+          #python -m pip list
+          #echo pyqtgraph system info
+          #python -c "import pyqtgraph as pg; pg.systemInfo()"
+          #xvfb-run python3 -m pyqtgraph.util.get_resolution
+          #./tool/yarn --cwd client/web install
+          #./tool/yarn --cwd client/web build
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
           /opt/st/strip tailscale
