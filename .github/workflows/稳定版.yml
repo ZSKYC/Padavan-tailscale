@@ -54,16 +54,21 @@ jobs:
           echo 正常编译
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/derper
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
+          /opt/st/strip derper
           mkdir -p /opt/tainomal
           cp -rf tailscale /opt/tainomal/tailscale
           cp -rf tailscaled /opt/tainomal/tailscaled
+          cp -rf derper /opt/tainomal/derper
           cd /opt/tainomal
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscale
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled
+          /opt/upx-3.95-amd64_linux/upx --lzma --best derper
           echo $(md5sum tailscale | awk '{print $1;}') >tailscale.txt
           echo $(md5sum tailscaled | awk '{print $1;}') >tailscaled.txt
+          echo $(md5sum derper | awk '{print $1;}') >derper.txt
           cd /opt/src
           echo 编译迷你版
           go clean
@@ -101,6 +106,8 @@ jobs:
           [ ! -d "/opt/tai/install/${{ needs.check.outputs.tag }}" ] && mkdir -p "/opt/tai/install/${{ needs.check.outputs.tag }}"
           cp -rf /opt/tainomal/tailscale "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale"
           cp -rf /opt/tainomal/tailscaled "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled"
+          cp -rf /opt/tainomal/derper "/opt/tai/install/${{ needs.check.outputs.tag }}/derper"
+          cp -rf /opt/tainomal/derper.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/derper.txt"
           cp -rf /opt/tainomal/tailscale.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale.txt"
           cp -rf /opt/tainomal/tailscaled.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled.txt"
           cp -rf /opt/taifull/tailscaled_full "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_full"
@@ -129,6 +136,8 @@ jobs:
 
            - **精简版**：tailscale_lite和tailscaled_lite 其中tailscale_lite.txt和tailscaled_lite 为其MD5校验值
 
+           - **服务器**：derper自建服务器，其中derper.txt为其MD5校验值
+
            **迷你版需要改名为tailscaled 并用ln -sf tailscaled tailscale 软连接出tailscale子程序**
            **迷你版为两个程序集中在一个里面使用软连接分出子程序**
            
@@ -142,10 +151,18 @@ jobs:
               /opt/tainomal/tailscale.txt
               /opt/tainomal/tailscaled
               /opt/tainomal/tailscaled.txt
+              /opt/tainomal/derper
+              /opt/tainomal/derper.txt
               /opt/taifull/tailscaled_full
               /opt/taifull/tailscaled_full.txt
               /opt/tailite/tailscale_lite
               /opt/tailite/tailscale_lite.txt
               /opt/tailite/tailscaled_lite
               /opt/tailite/tailscaled_lite.txt
+      - name: 删除工作流
+        uses: GitRML/delete-workflow-runs@main
+        with:
+         token: ${{ secrets.c8 }}
+         retain_days: 2
+         keep_minimum_runs: 0
      
