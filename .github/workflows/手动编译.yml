@@ -1,0 +1,135 @@
+name: 编译tailscale
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: '编译github.tailscale/tailscale分支或版本号，默认主分支main'
+        required: true
+        default: 'main'
+      name:
+        description: '自定义版本号（即自定义 ./tailscaled -version 所显示的版本信息）'
+        required: false
+        default: ''
+      target:
+        description: '请选择linux目标CPU架构'
+        required: true
+        type: choice
+        default: 'aarch64'
+        options:
+          - aarch64
+          - armv7
+          - armv6
+          - armv5
+          - arm
+          - mipsel
+          - mips
+          - mips64
+          - mips64le
+          - ppc64le
+          - s390x
+          - i386
+          - x86_64
+      upx:
+        description: '编译完成后是否使用upx压缩，部分架构压缩后运行异常'
+        required: true
+        default: false
+        type: boolean
+
+env:
+  branch: "${{ github.event.inputs.branch }}"
+  target: "${{ github.event.inputs.target }}"
+  name: "${{ github.event.inputs.name }}"
+jobs:
+ tailscale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 获取最新Go
+        run: |
+          latest_version=$(curl -L -k -s https://golang.org/dl/?mode=json | grep -m 1 -o '"version": "[^"]*' | sed 's/"version": "//' | tr -d 'go" ')
+          echo "go版本=$latest_version"
+          echo "gotag=$latest_version" >> $GITHUB_ENV
+      - name: 安装go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.gotag }}
+      - name: 开始编译
+        run: |
+            git clone -b $branch https://github.com/tailscale/tailscale /opt/tailscale
+            cd /opt/tailscale
+            export CGO_ENABLED=0
+            export GOOS=linux
+            case $target in 
+              aarch64)
+                export GOARCH=arm64
+                ;;
+              armv7)
+                export GOARCH=arm
+                export GOARM=7
+                ;;
+              armv6)
+                export GOARCH=arm
+                export GOARM=6
+                ;;
+              armv5)
+                export GOARCH=arm
+                export GOARM=5
+                ;;
+              arm)
+                export GOARCH=arm
+                ;;
+              mipsel)
+                export GOARCH=mipsle
+                export GOMIPS=softfloat
+                ;;
+              mips)
+                export GOARCH=mips
+                export GOMIPS=softfloat
+                ;;
+              mips64)
+                export GOARCH=mips64
+                ;;
+              mips64le)
+                export GOARCH=mips64le
+                ;;
+              ppc64le)
+                export GOARCH=ppc64le
+                ;;
+              s390x)
+                export GOARCH=s390x
+                ;;
+              i386)
+                export GOARCH=386
+                ;;
+              x86_64)
+                export GOARCH=amd64
+                ;;
+            esac
+            version=$(cat ./VERSION.txt)
+            go build -ldflags="-X 'tailscale.com/version.longStamp=${version} ${name}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -s -w" tailscale.com/cmd/tailscale
+            go build -ldflags="-X 'tailscale.com/version.longStamp=${version} ${name}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -s -w" tailscale.com/cmd/tailscaled
+            go build -ldflags="-X 'tailscale.com/version.longStamp=${version} ${name}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -s -w" tailscale.com/cmd/derper
+            mkdir -p /opt/bin
+            echo "tailscale ：`du -sh --block-size=M tailscale | cut -f1`"
+            echo "tailscaled ：`du -sh --block-size=M tailscaled | cut -f1`"
+            echo "derper ：`du -sh --block-size=M derper | cut -f1`"
+            file tailscaled
+            mv -f tailscale tailscaled derper /opt/bin/
+      - name: 安装 UPX
+        if: github.event.inputs.upx == 'true'
+        uses: crazy-max/ghaction-upx@v3
+        with:
+          version: latest
+          install-only: true
+      - name: UPX压缩
+        if: github.event.inputs.upx == 'true'
+        run: |
+          cd /opt/bin
+          upx --lzma --best tailscaled
+          upx --lzma --best tailscale
+          upx --lzma --best derper
+      - name: 上传
+        uses: actions/upload-artifact@v4
+        with:
+          name: tailscale-${{ env.target }}
+          path: /opt/bin/*
