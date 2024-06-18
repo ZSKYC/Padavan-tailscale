@@ -35,7 +35,7 @@ jobs:
           echo "go版本=$latest_version"
           echo "gotag=$latest_version" >> $GITHUB_ENV
       - name: 安装go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.gotag }}
       -
@@ -51,7 +51,7 @@ jobs:
           #sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-ERR-BuildInfo"|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
           #sed -i 's|return fmt.Sprintf("%s-dev%s-t%s%s", strings.TrimSpace(tailscaleroot.VersionDotTxt), bi.commitDate, bi.commitAbbrev(), dirtyString())|return fmt.Sprintf(strings.TrimSpace(tailscaleroot.VersionDotTxt))|g' ./version/version.go
           #sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
-          #sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
+          sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
