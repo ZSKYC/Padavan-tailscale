@@ -56,9 +56,9 @@ jobs:
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
           echo 正常编译
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscale
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscaled
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/derper
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.longStamp=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.shortStamp=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscale
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.longStamp=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.shortStamp=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.longStamp=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.shortStamp=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/derper
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
           /opt/st/strip derper
