@@ -48,17 +48,17 @@ jobs:
           git clone https://github.com/lmq8267/cloudflared.git /opt/st
           cd /opt/src
           sudo timedatectl set-timezone "Asia/Shanghai"
-          sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-ERR-BuildInfo"|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
-          sed -i 's|return fmt.Sprintf("%s-dev%s-t%s%s", strings.TrimSpace(tailscaleroot.VersionDotTxt), bi.commitDate, bi.commitAbbrev(), dirtyString())|return fmt.Sprintf(strings.TrimSpace(tailscaleroot.VersionDotTxt))|g' ./version/version.go
-          sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
-          sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
+          #sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-ERR-BuildInfo"|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
+          #sed -i 's|return fmt.Sprintf("%s-dev%s-t%s%s", strings.TrimSpace(tailscaleroot.VersionDotTxt), bi.commitDate, bi.commitAbbrev(), dirtyString())|return fmt.Sprintf(strings.TrimSpace(tailscaleroot.VersionDotTxt))|g' ./version/version.go
+          #sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
+          #sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
           tar -xvf /opt/st/upx-3.95-amd64_linux.tar.xz -C /opt
           chmod 777 /opt/upx-3.95-amd64_linux/upx
           chmod 777 /opt/st/strip
           echo 正常编译
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscale
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/tailscaled
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build tailscale.com/cmd/derper
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscale
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/derper
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
           /opt/st/strip derper
@@ -76,7 +76,7 @@ jobs:
           cd /opt/src
           echo 编译迷你版
           go clean
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled.combined -tags ts_include_cli -ldflags="-s -w" ./cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled.combined -tags ts_include_cli -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" ./cmd/tailscaled
           /opt/st/strip tailscaled.combined
           mkdir -p /opt/taifull
           cp -rf tailscaled.combined /opt/taifull/tailscaled_full
@@ -86,8 +86,8 @@ jobs:
           cd /opt/src
           go clean
           echo 编译精简版
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscale -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-s -w" ./cmd/tailscale
-          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-s -w" ./cmd/tailscaled
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscale -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" ./cmd/tailscale
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -o tailscaled -tags ts_omit_aws,ts_omit_bird,ts_omit_tap,ts_omit_kube -ldflags="-X 'tailscale.com/version.Long=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.Short=${{ needs.check.outputs.ver }}' -s -w" ./cmd/tailscaled
           /opt/st/strip tailscale
           /opt/st/strip tailscaled
           mkdir -p /opt/tailite
