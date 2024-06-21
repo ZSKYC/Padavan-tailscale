@@ -1,4 +1,4 @@
-name: 编译tailscale
+name: 手动编译tailscale
 
 on:
   workflow_dispatch:
@@ -9,6 +9,10 @@ on:
         default: 'main'
       name:
         description: '自定义版本号（即自定义 ./tailscaled -version 所显示的版本信息）'
+        required: false
+        default: ''
+      extra:
+        description: '自定义短语（即自定义 ./tailscaled -version 所显示的额外信息）'
         required: false
         default: ''
       target:
@@ -40,6 +44,7 @@ env:
   branch: "${{ github.event.inputs.branch }}"
   target: "${{ github.event.inputs.target }}"
   name: "${{ github.event.inputs.name }}"
+  extra: "${{ github.event.inputs.extra }}"
 jobs:
  tailscale:
     runs-on: ubuntu-latest
@@ -106,13 +111,19 @@ jobs:
                 ;;
             esac
             version=$(cat ./VERSION.txt)
-            go build -ldflags="-X 'tailscale.com/version.longStamp=${version} ${name}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -s -w" tailscale.com/cmd/tailscale
-            go build -ldflags="-X 'tailscale.com/version.longStamp=${version} ${name}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -s -w" tailscale.com/cmd/tailscaled
-            go build -ldflags="-X 'tailscale.com/version.longStamp=${version} ${name}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -s -w" tailscale.com/cmd/derper
+            #sed -i 's/getEmbeddedInfo().commit/""/g' ./version/version.go
+            sed -i 's/-dirty//g' ./version/version.go
+            sed -i 's#"  track: unstable (dev); frequent updates and bugs are likely\\n"#"  注意：这是不稳定版本（开发版）；可能会频繁更新代码和存在一些bug\\n"#g' ./version/print.go
+            sed -i 's#"  other commit: %s\\n", extraGitCommitStamp#"  %s\\n", extraGitCommitStamp#g' ./version/print.go
+            sed -i 's#"  tailscale commit: %s%s\\n", gitCommit(), dirtyString()#"  当前版本提交hash值: %s\\n", gitCommit()#g' ./version/print.go
+            sed -i 's#"  go version: %s\\n"#"  go 版本: %s\\n"#g' ./version/print.go
+            go build -ldflags="-X 'tailscale.com/version.longStamp=${version}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -X 'tailscale.com/version.gitCommitStamp=' -X 'tailscale.com/version.extraGitCommitStamp=$extra' -s -w" tailscale.com/cmd/tailscale
+            go build -ldflags="-X 'tailscale.com/version.longStamp=${version}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -X 'tailscale.com/version.gitCommitStamp=' -X 'tailscale.com/version.extraGitCommitStamp=$extra' -s -w" tailscale.com/cmd/tailscaled
+            go build -ldflags="-X 'tailscale.com/version.longStamp=${version}' -X 'tailscale.com/version.shortStamp=${version} ${name}' -X 'tailscale.com/version.gitCommitStamp=' -X 'tailscale.com/version.extraGitCommitStamp=$extra' -s -w" tailscale.com/cmd/derper
             mkdir -p /opt/bin
-            echo "tailscale ：`du -sh --block-size=M tailscale | cut -f1`"
-            echo "tailscaled ：`du -sh --block-size=M tailscaled | cut -f1`"
-            echo "derper ：`du -sh --block-size=M derper | cut -f1`"
+            echo "tailscale ：`ls -alh tailscale | awk '{print $5}'`"
+            echo "tailscaled ：`ls -alh tailscaled | awk '{print $5}'`"
+            echo "derper ：`ls -alh derper | awk '{print $5}'`"
             file tailscaled
             mv -f tailscale tailscaled derper /opt/bin/
       - name: 安装 UPX
