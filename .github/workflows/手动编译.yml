@@ -6,7 +6,7 @@ on:
       branch:
         description: '编译github.tailscale/tailscale分支或版本号，默认主分支main'
         required: true
-        default: 'main'
+        default: 'v1.68.0'
       name:
         description: '自定义版本号（即自定义 ./tailscaled -version 所显示的版本信息）'
         required: false
