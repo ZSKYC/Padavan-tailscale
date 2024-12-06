@@ -131,7 +131,7 @@ jobs:
           token: ${{ secrets.c8 }}
           body: |
            > ### 稳定版 - 编译时间： ${{ env.build_time }}
-           **密钥存储位置已改为：/etc/storage/tailscale/lib/tailscaled.state **
+           **密钥存储位置已改为：/etc/storage/tailscale/lib/tailscaled.state**
 
            ### **各版本区别**
            - **常规版**：tailscale 和 tailscaled 其中tailscale.txt和tailscaled.txt 为其MD5校验值
