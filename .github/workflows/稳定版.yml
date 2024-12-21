@@ -18,7 +18,8 @@ jobs:
         id: getversion
         run: |
           ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
-          tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name' | tr -d 'v'`
+          #tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name' | tr -d 'v'`
+          tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
           cver=`curl https://api.github.com/repos/lmq8267/tailscale/releases/latest | jq -r '.tag_name'`
           echo "tag=${tag}" >> $GITHUB_OUTPUT
           echo "ver=${ver}" >> $GITHUB_OUTPUT
