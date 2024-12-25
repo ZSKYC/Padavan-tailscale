@@ -15,6 +15,10 @@ on:
         description: '自定义短语（即自定义 ./tailscaled -version 所显示的额外信息）'
         required: false
         default: ''
+      tspath:
+        description: '自定义密钥路径（官方默认：/var/lib/tailscale/tailscaled.state）'
+        required: false
+        default: ''
       target:
         description: '请选择linux目标CPU架构'
         required: true
@@ -45,6 +49,7 @@ env:
   target: "${{ github.event.inputs.target }}"
   name: "${{ github.event.inputs.name }}"
   extra: "${{ github.event.inputs.extra }}"
+  tspath: "${{ github.event.inputs.tspath }}"
 jobs:
  tailscale:
     runs-on: ubuntu-latest
@@ -112,6 +117,10 @@ jobs:
             esac
             version=$(cat ./VERSION.txt)
             #sed -i 's/getEmbeddedInfo().commit/""/g' ./version/version.go
+            if [ -n "${{ github.event.inputs.tspath }}" ]; then
+              sed -i "s|return \"/var/lib/tailscale/tailscaled.state\"|return \"${{ github.event.inputs.tspath }}\"|g" ./paths/paths_unix.go
+              echo "修改密钥文件路径为：${{ github.event.inputs.tspath }}"
+            fi
             sed -i 's/-dirty//g' ./version/version.go
             sed -i 's#"  track: unstable (dev); frequent updates and bugs are likely\\n"#"  注意：这是不稳定版本（开发版）；可能会频繁更新代码和存在一些bug\\n"#g' ./version/print.go
             sed -i 's#"  other commit: %s\\n", extraGitCommitStamp#"  %s\\n", extraGitCommitStamp#g' ./version/print.go
