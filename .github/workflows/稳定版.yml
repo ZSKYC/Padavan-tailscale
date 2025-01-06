@@ -4,7 +4,13 @@ on:
   schedule:
     - cron: '0 3,20 * * *'
   workflow_dispatch:
+env:
+  TZ: Asia/Shanghai
 
+#设置仓库的读写权限
+permissions:
+  contents: write
+  actions: write
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -13,17 +19,22 @@ jobs:
       ver: ${{ steps.getversion.outputs.ver }}
       cver: ${{ steps.getversion.outputs.cver }}
     steps:
-      -
-        name: Get version
+      - name: Get version
         id: getversion
         run: |
           ver=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
           #tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name' | tr -d 'v'`
           tag=`curl https://api.github.com/repos/tailscale/tailscale/releases/latest | jq -r '.tag_name'`
-          cver=`curl https://api.github.com/repos/lmq8267/tailscale/releases/latest | jq -r '.tag_name'`
+          cver=`curl https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name'`
           echo "tag=${tag}" >> $GITHUB_OUTPUT
           echo "ver=${ver}" >> $GITHUB_OUTPUT
           echo "cver=${cver}" >> $GITHUB_OUTPUT
+      - name: delete-workflow
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          retain_days: 0
+          keep_minimum_runs: 0
 
   build:
     runs-on: ubuntu-latest
@@ -41,7 +52,7 @@ jobs:
           go-version: ${{ env.gotag }}
       -
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - 
         name: 编译
         run: |
@@ -107,7 +118,7 @@ jobs:
          sudo timedatectl set-timezone "Asia/Shanghai"
       - name: 上传
         run: |
-          git clone https://github.com/lmq8267/tailscale.git /opt/tai
+          git clone https://github.com/${{ github.repository }}.git /opt/tai
           [ ! -d "/opt/tai/install/${{ needs.check.outputs.tag }}" ] && mkdir -p "/opt/tai/install/${{ needs.check.outputs.tag }}"
           cp -rf /opt/tainomal/tailscale "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale"
           cp -rf /opt/tainomal/tailscaled "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled"
@@ -124,12 +135,12 @@ jobs:
           cd /opt/tai
           git add .
           git commit -am "稳定版：${{ needs.check.outputs.tag }} 更新时间： $(date '+%Y-%m-%d %H:%M:%S')"
-          git push --quiet "https://${{ secrets.c8 }}@github.com/lmq8267/tailscale.git"
+          git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
       - 
         name: 发布 
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          token: ${{ secrets.c8 }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           body: |
            > ### 稳定版 - 编译时间： ${{ env.build_time }}
            **密钥存储位置已改为：/etc/storage/tailscale/lib/tailscaled.state**
@@ -164,12 +175,6 @@ jobs:
               /opt/tailite/tailscale_lite.txt
               /opt/tailite/tailscaled_lite
               /opt/tailite/tailscaled_lite.txt
-      - name: 删除工作流
-        uses: GitRML/delete-workflow-runs@main
-        with:
-         token: ${{ secrets.c8 }}
-         retain_days: 2
-         keep_minimum_runs: 0
      
   keepalive-workflow:
     # github超过60天未提交将自动停止工作流
@@ -177,6 +182,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       actions: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: gautamkrishnar/keepalive-workflow@v2
