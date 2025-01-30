@@ -118,24 +118,22 @@ jobs:
          sudo timedatectl set-timezone "Asia/Shanghai"
       - name: 上传
         run: |
-          git clone https://github.com/${{ github.repository }}.git /opt/tai
-          [ ! -d "/opt/tai/install/${{ needs.check.outputs.tag }}" ] && mkdir -p "/opt/tai/install/${{ needs.check.outputs.tag }}"
-          cp -rf /opt/tainomal/tailscale "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale"
-          cp -rf /opt/tainomal/tailscaled "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled"
-          cp -rf /opt/tainomal/derper "/opt/tai/install/${{ needs.check.outputs.tag }}/derper"
-          cp -rf /opt/tainomal/derper.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/derper.txt"
-          cp -rf /opt/tainomal/tailscale.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale.txt"
-          cp -rf /opt/tainomal/tailscaled.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled.txt"
-          cp -rf /opt/taifull/tailscaled_full "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_full"
-          cp -rf /opt/taifull/tailscaled_full.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_full.txt"
-          cp -rf /opt/tailite/tailscale_lite "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale_lite"
-          cp -rf /opt/tailite/tailscaled_lite "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_lite"
-          cp -rf /opt/tailite/tailscale_lite.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscale_lite.txt"
-          cp -rf /opt/tailite/tailscaled_lite.txt "/opt/tai/install/${{ needs.check.outputs.tag }}/tailscaled_lite.txt"
-          cd /opt/tai
+          [ ! -d "install/${{ needs.check.outputs.tag }}" ] && mkdir -p "install/${{ needs.check.outputs.tag }}"
+          cp -rf /opt/tainomal/tailscale "install/${{ needs.check.outputs.tag }}/tailscale"
+          cp -rf /opt/tainomal/tailscaled "install/${{ needs.check.outputs.tag }}/tailscaled"
+          cp -rf /opt/tainomal/derper "install/${{ needs.check.outputs.tag }}/derper"
+          cp -rf /opt/tainomal/derper.txt "install/${{ needs.check.outputs.tag }}/derper.txt"
+          cp -rf /opt/tainomal/tailscale.txt "install/${{ needs.check.outputs.tag }}/tailscale.txt"
+          cp -rf /opt/tainomal/tailscaled.txt "install/${{ needs.check.outputs.tag }}/tailscaled.txt"
+          cp -rf /opt/taifull/tailscaled_full "install/${{ needs.check.outputs.tag }}/tailscaled_full"
+          cp -rf /opt/taifull/tailscaled_full.txt "install/${{ needs.check.outputs.tag }}/tailscaled_full.txt"
+          cp -rf /opt/tailite/tailscale_lite "install/${{ needs.check.outputs.tag }}/tailscale_lite"
+          cp -rf /opt/tailite/tailscaled_lite "install/${{ needs.check.outputs.tag }}/tailscaled_lite"
+          cp -rf /opt/tailite/tailscale_lite.txt "install/${{ needs.check.outputs.tag }}/tailscale_lite.txt"
+          cp -rf /opt/tailite/tailscaled_lite.txt "install/${{ needs.check.outputs.tag }}/tailscaled_lite.txt"
           git add .
           git commit -am "稳定版：${{ needs.check.outputs.tag }} 更新时间： $(date '+%Y-%m-%d %H:%M:%S')"
-          git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          #git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
       - 
         name: 发布 
         uses: softprops/action-gh-release@v2
@@ -175,6 +173,11 @@ jobs:
               /opt/tailite/tailscale_lite.txt
               /opt/tailite/tailscaled_lite
               /opt/tailite/tailscaled_lite.txt
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          force_with_lease: true
      
   keepalive-workflow:
     # github超过60天未提交将自动停止工作流
