@@ -110,7 +110,7 @@ jobs:
           /opt/upx-3.95-amd64_linux/upx --lzma --best tailscaled_lite
           echo $(md5sum tailscale_lite | awk '{print $1;}') >tailscale_lite.txt
           echo $(md5sum tailscaled_lite | awk '{print $1;}') >tailscaled_lite.txt
-          echo "build_time=$(TZ=UTC-8 date +%Y-%m-%d' '%H:%M:%S)" >> $GITHUB_ENV
+          echo "build_time=$(TZ=UTC-8 date '+%Y年%m月%d日%H:%M:%S' | jq -sRr @uri)" >> $GITHUB_ENV
       - name: 设置机器人
         run : |
          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -140,7 +140,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
-           > ### 稳定版 - 编译时间： ${{ env.build_time }}
+           > ### ![](https://img.shields.io/badge/%E7%BC%96%E8%AF%91%E6%97%B6%E9%97%B4-${{ env.build_time }}-8267?logo=github&labelColor=%E9%A1%BB)![](https://img.shields.io/github/downloads/${GITHUB_REPOSITORY}/${{ needs.check.outputs.ver }}/total?label=%E4%B8%8B%E8%BD%BD%E6%AC%A1%E6%95%B0&logo=github) 
+           
            **密钥存储位置已改为：/etc/storage/tailscale/lib/tailscaled.state**
 
            ### **各版本区别**
