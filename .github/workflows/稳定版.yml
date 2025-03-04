@@ -147,9 +147,9 @@ jobs:
 
            - **迷你版**：`tailscaled_full`  其中`tailscaled_full.txt` 为其MD5校验值
 
-           - **精简版**：`tailscale_lite`和`tailscaled_lite` 其中`tailscale_lite.txt`和`tailscaled_lite` 为其MD5校验值
+           - **精简版**：`tailscale_lite`和`tailscaled_lite` 其中`tailscale_lite.txt`和`tailscaled_lite.txt` 为其MD5校验值
 
-           - **服务器**：`derper`自建服务器，其中`derper.txt`为其MD5校验值
+           - **服务器**：`derper`自建中继服务器，其中`derper.txt`为其MD5校验值
 
            ##
            
