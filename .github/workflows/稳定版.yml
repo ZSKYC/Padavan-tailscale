@@ -66,7 +66,7 @@ jobs:
           #sed -i 's|return fmt.Sprintf("%s-dev%s-t%s%s", strings.TrimSpace(tailscaleroot.VersionDotTxt), bi.commitDate, bi.commitAbbrev(), dirtyString())|return fmt.Sprintf(strings.TrimSpace(tailscaleroot.VersionDotTxt))|g' ./version/version.go
           sed -i 's|return strings.TrimSpace(tailscaleroot.VersionDotTxt) + "-dev" + bi.commitDate|return strings.TrimSpace(tailscaleroot.VersionDotTxt)|g' ./version/version.go
           sed -i 's|return "/var/lib/tailscale/tailscaled.state"|return "/etc/storage/tailscale/lib/tailscaled.state"|g' ./paths/paths_unix.go
-          sed -i '/hi.ServerName != m.hostname/,+2d' cmd/derper/cert.go || true
+          #sed -i '/hi.ServerName != m.hostname/,+2d' cmd/derper/cert.go || true
 
           echo 正常编译
           CGO_ENABLED=0 GOOS=linux GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-X 'tailscale.com/version.longStamp=${{ needs.check.outputs.ver }}' -X 'tailscale.com/version.shortStamp=${{ needs.check.outputs.ver }}' -s -w" tailscale.com/cmd/tailscale
