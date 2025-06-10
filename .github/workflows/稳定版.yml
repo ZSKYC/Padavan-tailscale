@@ -129,13 +129,9 @@ jobs:
           git add .
           git commit -am "稳定版：${{ needs.check.outputs.tag }} 更新时间： $(date '+%Y-%m-%d %H:%M:%S')"
           #git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-      - name: 设置 Node.js 为 v18（规避上传崩溃问题）
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
       - 
         name: 发布 
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
